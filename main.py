@@ -31,20 +31,33 @@ def main():
     for row in puzzle_lines:
         print(row)
 
+    #PROBATINAS
+
+    print("\n")
+        
+    matrizSoluciones = getSolution(puzzle_lines)
+
+    for row in matrizSoluciones:
+        print(row)
+
+    #FIN PROBATINAS
+
     #Llamamos al metodo para resolver el tablero
         #falta metodo para obtener la posicion inicial del personaje
         #falta metodo para obtener la solucion final
     steps = []
-    if solve_Sokoban_backtracking():
-        print("Se ha encontrado solucion")
-
+    #if solve_Sokoban_backtracking():
+    #    print("Se ha encontrado solucion")
+        #imprimir steps (los devuelve el metodo de backtracking)
+    #else:
+    #    print("nose")
     
 
 
 #FUNCIONES FUERA DEL MAIN
 
     
-def solve_Sokoban_backtracking(self, x, y, puzzle, steps, solution):
+def solve_Sokoban_backtracking(x, y, puzzle, steps, solution):
     print("hola")
 
     if isSolved(puzzle, solution) == True:
@@ -74,14 +87,33 @@ def solve_Sokoban_backtracking(self, x, y, puzzle, steps, solution):
     return False
 
 
+def getInitialPositionXY(puzzle):
+    print("Nose")
 
-def isSolved(self, puzzle, solution):
+def getSolution(puzzle):
+    
+    #En este metodo disponemos del puzzle original y queremos obtener una matriz doble con las posiciones de los '.' del puzzle
+
+    solutionArray=[]
+    rowSolution=[]
+
+    for j, row in enumerate(puzzle):
+        for i, char in enumerate(row):
+            if char==".":
+                rowSolution.append((i, j))
+                solutionArray.append(rowSolution)
+                rowSolution = []
+
+    return solutionArray
+
+
+def isSolved(puzzle, solution):
     print("solution")
 
-def isMovementValid(self, x, y, puzzle):
+def isMovementValid(x, y, puzzle):
     print("nose")
 
-def updatePuzzle(self, x, y, puzzle):
+def updatePuzzle(x, y, puzzle):
     print("nose")
     #devuelve puzle con las posiciones movidas
 
