@@ -48,7 +48,7 @@ def main():
 
     #print("El siguiente movimiento es valido: ", isMovementValid(x, y, puzzle_lines))
     
-    print("Tiene dos paredes la caja cuando se mueva?", isWithTwoWalls(x+1, y, puzzle_lines))
+    print("Tiene dos paredes la caja cuando se mueva? o se va a mover a una pared la caja", isBoxWithTwoWallsANDNotMovingToWall(x+1, y, puzzle_lines))
 
     #FIN PROBATINAS
 
@@ -151,7 +151,7 @@ def isMovementValid(x, y, puzzle):
     
     #comprobar si cuando muevo el personaje este mueve una caja y tiene dos paredes alrededor y no se encuentra en un "." 
 
-    if isWithTwoWalls(x, y, xP, yP, puzzle) : #tambien se comprueba si se va a mover hacia una pared Y si no va a mover una caja da FALSE
+    if isBoxWithTwoWallsANDNotMovingToWall(x, y, puzzle) : #tambien se comprueba si se va a mover hacia una pared Y si no va a mover una caja da FALSE
         return False  #NO es valido                        #*****hay que comprobar cuando la caja ya esta pegada a la pared
     
   # if isNearWallWithOutGoal():
@@ -165,71 +165,69 @@ def isMovementValid(x, y, puzzle):
     return True
     
 
-def isWithTwoWalls(x, y, puzzle): #isNotMovingToaWall  #se le pasa la posicion a la que se va a mover el personaje
+def isBoxWithTwoWallsANDNotMovingToWall(x, y, puzzle):
+    counter = 0
 
-    counter=0
+    # Detectamos si el personaje está al lado de una caja
+    if puzzle[y][x] == "$":  # Entonces va a mover una caja
 
-    #primero detectamos si esta al lado de una caja
+        # Buscamos hacia dónde va a mover la caja
 
-    if puzzle[y][x]=="$": #Entonces va a mover una caja
-
-        #buscamos a que lado va a mover la caja
-        
-        if puzzle[y+1][x]=="@" and puzzle[y-1][x]!=".":
-            #esta a la derecha por lo tanto va a moverte a la izquierda
-            if puzzle[y-1][x]=="#"or"!":
-                return True # no se puede mover a una pared
+        if puzzle[y + 1][x] == "@" and puzzle[y - 1][x] != ".":
+            # Está a la derecha por lo tanto va a moverte a la izquierda
+            if puzzle[y - 1][x] in {"#", "!"}:
+                return True  # No se puede mover a una pared
             else:
-                if puzzle[y-2][x]=="#"or"!":
-                    counter=counter+1
-                if puzzle[y-1][x+1]=="#"or"!":
-                    counter=counter+1
-                if puzzle[y-1][x-1]=="#"or"!":
-                    counter=counter+1
+                if puzzle[y - 2][x] in {"#", "!"}:
+                    counter += 1
+                if puzzle[y - 1][x + 1] in {"#", "!"}:
+                    counter += 1
+                if puzzle[y - 1][x - 1] in {"#", "!"}:
+                    counter += 1
 
-        if puzzle[y-1][x]=="@" and puzzle[y+1][x]!=".":
-            #esta a la izquierda por lo tanto va a moverte a la derecha
-            if puzzle[y+1][x]=="#"or"!":
-                return True #No se puede mover a una pared -NO VALIDO
+        if puzzle[y - 1][x] == "@" and puzzle[y + 1][x] != ".":
+            # Está a la izquierda por lo tanto va a moverte a la derecha
+            if puzzle[y + 1][x] in {"#", "!"}:
+                return True  # No se puede mover a una pared - NO VALIDO
             else:
-                #se comprueba las tres cajas de alrededor
-                if puzzle[y+2][x]=="#"or"!":
-                    counter=counter+1
-                if puzzle[y+1][x-1]=="#"or"!":
-                    counter=counter+1
-                if puzzle[y+1][x+1]=="#"or"!":
-                    counter=counter+1
+                # Se comprueba las tres cajas de alrededor
+                if puzzle[y + 2][x] in {"#", "!"}:
+                    counter += 1
+                if puzzle[y + 1][x - 1] in {"#", "!"}:
+                    counter += 1
+                if puzzle[y + 1][x + 1] in {"#", "!"}:
+                    counter += 1
 
-        if puzzle[y][x+1]=="@"and puzzle[y][x-1]!=".":
-            #esta abajo por lo tanto te mueve para arriba
-            if puzzle[y][x-1]=="#"or"!":
-                return True #No puede moverse a una pared
+        if puzzle[y][x + 1] == "@" and puzzle[y][x - 1] != ".":
+            # Está abajo por lo tanto te mueve para arriba
+            if puzzle[y][x - 1] in {"#", "!"}:
+                print("hola jefe", x, y, puzzle[y][x - 1] in {"!", "#"})
+                return True  # No puede moverse a una pared
             else:
-                if puzzle[y][x-2]=="#"or"!":
-                    counter=counter+1
-                if puzzle[y+1][x-1]=="#"or"!":
-                    counter=counter
-                if puzzle[y-1][x-1]=="#"or"!":
-                    counter=counter+1
-        
-        if puzzle[y][x-1]=="@" and puzzle[y][x+1]!=".":
-            
-            #esta por arriba entonces lo mueve para abajo
-            if puzzle[y][x+1]=="#"or"!":
-                return True #no se puede mover a una pared - lo damos por mal0
+                if puzzle[y][x - 2] in {"#", "!"}:
+                    counter += 1
+                if puzzle[y + 1][x - 1] in {"#", "!"}:
+                    counter += 1
+                if puzzle[y - 1][x - 1] in {"#", "!"}:
+                    counter += 1
+
+        if puzzle[y][x - 1] == "@" and puzzle[y][x + 1] != ".":
+            # Está por arriba entonces lo mueve para abajo
+            if puzzle[y][x + 1] in {"#", "!"}:
+                return True  # No se puede mover a una pared - lo damos por malo
             else:
-                if puzzle[y][x+2]=="#"or"!":
-                    counter=counter+1
-                if puzzle[y+1][x+1]=="#"or"!":
-                    counter=counter+1
-                if puzzle[y-1][x+1]=="#"or"!":
-                    counter=counter+1
+                if puzzle[y][x + 2] in {"#", "!"}:
+                    counter += 1
+                if puzzle[y + 1][x + 1] in {"#", "!"}:
+                    counter += 1
+                if puzzle[y - 1][x + 1] in {"#", "!"}:
+                    counter += 1
 
         if counter >= 2:
+            return True  # Si está entre dos o más cajas
 
-            return True #si que esta entre dos o mas cajas
-    
-    return False #valido
+    return False  # Valido
+
 
 
 
