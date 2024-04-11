@@ -1,6 +1,16 @@
 
 #Sokoban solver
 
+#   Leyenda 
+#   # -> pared
+#   $ -> caja
+#   @ -> personaje
+#   . -> objetivo
+#   * -> personaje sobre objetivo
+#   ! -> caja sobre objetivo
+
+#ToDo corregir error de personaje sobre objetivo
+
 def main():
 
 
@@ -55,13 +65,22 @@ def main():
 
     #FIN PROBATINAS
 
+    
+    #xP, yP = getCharPositionXY(puzzle_lines)
+    puzzle_lines=updatePuzzle(3, 4, 4, 4, puzzle_lines)
+
+    for row in puzzle_lines:
+        print(row)
+
     """
+    #updatePuzzle(xP, yP, )
 
     #Llamamos al metodo para resolver el tablero
         #falta metodo para obtener la posicion inicial del personaje
         #falta metodo para obtener la solucion final
     steps = []
-    if solve_Sokoban_backtracking():
+    x, y = getCharPositionXY(puzzle_lines)
+    if solve_Sokoban_backtracking(x, y, puzzle_lines, steps, getSolution(puzzle_lines)):
         print("SE ha encontrado solucion")
         #imprimir steps (los devuelve el metodo de backtracking)
     else:
@@ -83,6 +102,7 @@ def solve_Sokoban_backtracking(x, y, puzzle, steps, solution):
         
         #Ahora hay que plantear todos los movimentos posibles del personaje
         #Arriba - abajo - derecha - izquierda
+
         if solve_Sokoban_backtracking(x+1, y, updatePuzzle(x, y, x+1, y, puzzle), steps):
             return True, steps + ["right"]
         
@@ -106,7 +126,7 @@ def getCharPositionXY(puzzle):
     
     for i, row in enumerate(puzzle):
         for j, element in enumerate(row):
-            if element == "@":
+            if element in {"@", "*"}:
                 return j, i
 
 
@@ -139,7 +159,7 @@ def isSolved(puzzle, solution):
 
     
 
-def isMovementValid(x, y, puzzle):
+def isMovementValid(x, y, puzzle): #x y es la posicion a la que se va a mover el personaje
 
     #En este metodo tenemos que comprobar si la posicion en la que se encontraria el personaje segund las coordenadas x y es valida
     #para ello hay que tener en cuenta que las cajas que hay en el mapa pueden moverse, y que no deben hacerlo en determinadas posiciones
@@ -177,7 +197,7 @@ def isNearWallWithOutGoal(x, y, puzzle): #no hace falta comprobar si se va a mov
 
     if puzzle[y][x] == "$": #Entonces va a mover una caja
 
-        if puzzle[y + 1][x] == "@" and puzzle[y - 1][x] != ".":
+        if puzzle[y + 1][x] in {"@", "*"} and puzzle[y - 1][x] != ".":
 
             if puzzle[y-2][x] in {"#", "!"} and puzzle[y-2][x+1] in {"#", "!"} and puzzle[y-2][x-1] in {"#", "!"}:
                 #si tiene 3 cajas alrededor hay que comprobar si hay un . en su vertical porque si no es un movimiento invalido
@@ -188,7 +208,7 @@ def isNearWallWithOutGoal(x, y, puzzle): #no hace falta comprobar si se va a mov
 
                 return True   
             
-        if puzzle[y - 1][x] == "@" and puzzle[y + 1][x] != ".":
+        if puzzle[y - 1][x] in {"@", "*"} and puzzle[y + 1][x] != ".":
             
             if puzzle[y+2][x] in {"#", "!"} and puzzle[y+2][x+1] in {"#", "!"} and puzzle[y+2][x-1] in {"#", "!"}:
 
@@ -198,7 +218,7 @@ def isNearWallWithOutGoal(x, y, puzzle): #no hace falta comprobar si se va a mov
                     
                 return True
             
-        if puzzle[y][x+1] == "@" and puzzle[y][x-1] != ".":
+        if puzzle[y][x+1] in {"@", "*"} and puzzle[y][x-1] != ".":
             
             if puzzle[y][x-2] in {"#", "!"} and puzzle[y+1][x-2] in {"#", "!"} and puzzle[y-1][x-2] in {"#", "!"}:
 
@@ -209,7 +229,7 @@ def isNearWallWithOutGoal(x, y, puzzle): #no hace falta comprobar si se va a mov
 
                 return True
             
-        if puzzle[y][x-1] == "@" and puzzle[y][x+1] != ".":
+        if puzzle[y][x-1] in {"@", "*"} and puzzle[y][x+1] != ".":
 
             if puzzle[y][x+2] in {"#", "!"} and puzzle[y+1][x+2] in {"#", "!"} and puzzle[y-1][x+2] in {"#", "!"}:  #falta implementar fullLineWallX()
 
@@ -241,7 +261,7 @@ def isBoxWithTwoWallsANDNotMovingToWall(x, y, puzzle):
         counter = 0
         # Buscamos hacia dónde va a mover la caja
 
-        if puzzle[y + 1][x] == "@" and puzzle[y - 1][x] != ".":
+        if puzzle[y + 1][x] in {"@", "*"} and puzzle[y - 1][x] != ".":
             # Está a la derecha por lo tanto va a moverte a la izquierda
             if puzzle[y - 1][x] in {"#", "!"}:
                 return True  # No se puede mover a una pared
@@ -253,7 +273,7 @@ def isBoxWithTwoWallsANDNotMovingToWall(x, y, puzzle):
                 if puzzle[y - 1][x - 1] in {"#", "!"}:
                     counter += 1
 
-        if puzzle[y - 1][x] == "@" and puzzle[y + 1][x] != ".":
+        if puzzle[y - 1][x] in {"@", "*"} and puzzle[y + 1][x] != ".":
             # Está a la izquierda por lo tanto va a moverte a la derecha
             if puzzle[y + 1][x] in {"#", "!"}:
                 return True  # No se puede mover a una pared - NO VALIDO
@@ -266,11 +286,11 @@ def isBoxWithTwoWallsANDNotMovingToWall(x, y, puzzle):
                 if puzzle[y + 1][x + 1] in {"#", "!"}:
                     counter += 1
 
-        if puzzle[y][x + 1] == "@" and puzzle[y][x - 1] != ".":
+        if puzzle[y][x + 1] in {"@", "*"} and puzzle[y][x - 1] != ".":
             # Está abajo por lo tanto te mueve para arriba
             if puzzle[y][x - 1] in {"#", "!"}:
                 print("hola jefe", x, y, puzzle[y][x - 1] in {"!", "#"})
-                return True  # No puede moverse a una pared
+                return True  # No puede moverse a una pared 
             else:
                 if puzzle[y][x - 2] in {"#", "!"}:
                     counter += 1
@@ -279,7 +299,7 @@ def isBoxWithTwoWallsANDNotMovingToWall(x, y, puzzle):
                 if puzzle[y - 1][x - 1] in {"#", "!"}:
                     counter += 1
 
-        if puzzle[y][x - 1] == "@" and puzzle[y][x + 1] != ".":
+        if puzzle[y][x - 1]in {"@", "*"} and puzzle[y][x + 1] != ".":
             # Está por arriba entonces lo mueve para abajo
             if puzzle[y][x + 1] in {"#", "!"}:
                 return True  # No se puede mover a una pared - lo damos por malo
@@ -300,16 +320,55 @@ def isBoxWithTwoWallsANDNotMovingToWall(x, y, puzzle):
 
 
 def updatePuzzle(xP, yP, x, y, puzzle):  # Cuando una caja se pone encima de un objetivo se tiene que cambiar al caracter '!'
+    #tenemos la posicion actual del personaje y la posicion a la que se va a mover
 
-    if puzzle[y][x] == "$":  # Entonces va a mover una caja
-        # Código correspondiente a este caso
-        print("hola")
-    elif puzzle[y][x] == ".":  # Si el personaje estaba encima de un objetivo debería de cambiar de forma
-        print("nola")
-    elif puzzle[yP][xP] == "&":
+    ####### se necesitan modificar muchas cosas porque hay que tener en cuenta que cuando el personaje
+        #   esta encima de una caja se convierte en un *
+    
+    char=puzzle[y][x] #dependiendo del caracter al que se vaya a mover el personaje
+    
+
+    if char == "$":  # Entonces va a mover una caja
+
+        puzzle[yP][xP] = " "
+        puzzle[x][y]="@"
+
         
+        # Calcula la dirección de movimiento de la caja
+        dx = x - xP
+        dy = y - yP
+        # Mueve la caja a la nueva posición
+        puzzle[y + dy][x + dx] = "$"
+        # Si la caja está sobre un objetivo, cambia su representación a '!'
+        if puzzle[y + dy][x + dx] == ".":
+            puzzle[y + dy][x + dx] = "!"
 
-    return False
+        
+    elif char == ".":  # Si el personaje estaba encima de un objetivo debería de cambiar de forma a *
+        
+        #comprobar si el personaje estaba en forma de *
+
+        if puzzle[yP][xP] == "*":
+            puzzle[yP][xP] = "."
+        else:
+            puzzle[yP][xP] = " "
+        
+        puzzle[x][y]="*"
+
+
+    elif char==" ":
+        #movimiento normal
+
+        if puzzle[yP][xP] == "*":
+            puzzle[yP][xP] = "."
+        else:
+            puzzle[yP][xP] = " "
+
+        puzzle[x][y]="@"
+
+
+
+    return puzzle
 
 
 
