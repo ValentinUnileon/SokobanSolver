@@ -1,5 +1,7 @@
 
 #Sokoban solver
+import sys
+sys.setrecursionlimit(100000)
 
 #   Leyenda 
 #   # -> pared
@@ -80,20 +82,30 @@ def main():
         #falta metodo para obtener la solucion final
     steps = []
     x, y = getCharPositionXY(puzzle_lines)
-    if solve_Sokoban_backtracking(x, y, puzzle_lines, steps, getSolution(puzzle_lines)):
+
+    sol, pasos= solve_Sokoban_backtracking(x, y, puzzle_lines, steps, getSolution(puzzle_lines),  0)
+
+    if sol==True:
         print("SE ha encontrado solucion")
+
+        for step in pasos:
+            print("MOV ->", step)
         #imprimir steps (los devuelve el metodo de backtracking)
+    
     else:
         print("NO se ha encontrado la solucion")
     
 
 
 #FUNCIONES FUERA DEL MAIN
-
     
-def solve_Sokoban_backtracking(x, y, puzzle, steps, solution):
-    print("hola")
+def solve_Sokoban_backtracking(x, y, puzzle, steps, solution, recursion_count):
 
+    if recursion_count >= 100:
+        return False, []  # Detener la recursión
+    
+    print(x, y, "posiciones a la que se mueve el personaje")
+    
     if isSolved(puzzle, solution) == True:
         #Se ha resuelto el tablero
         return True, steps
@@ -102,17 +114,18 @@ def solve_Sokoban_backtracking(x, y, puzzle, steps, solution):
         
         #Ahora hay que plantear todos los movimentos posibles del personaje
         #Arriba - abajo - derecha - izquierda
+        xP, yP= getCharPositionXY(puzzle)
 
-        if solve_Sokoban_backtracking(x+1, y, updatePuzzle(x, y, x+1, y, puzzle), steps):
+        if solve_Sokoban_backtracking(x+1, y, updatePuzzle(xP, yP, x, y, puzzle), steps, solution, recursion_count + 1): #le paso al metodo el puzzle con el movimiento correcto implementado en el tablero
             return True, steps + ["right"]
         
-        if solve_Sokoban_backtracking(x-1, y, updatePuzzle(x, y, puzzle), steps):
+        if solve_Sokoban_backtracking(x-1, y, updatePuzzle(xP, yP, x, y, puzzle), steps, solution, recursion_count + 1):
             return True, steps + ["left"]
 
-        if solve_Sokoban_backtracking(x, y+1, updatePuzzle(x, y, puzzle), steps):
+        if solve_Sokoban_backtracking(x, y+1, updatePuzzle(xP, yP, x, y, puzzle), steps, solution, recursion_count + 1):
             return True, steps + ["up"]
         
-        if solve_Sokoban_backtracking(x, y-1, updatePuzzle(x, y, puzzle), steps):
+        if solve_Sokoban_backtracking(x, y-1, updatePuzzle(xP, yP, x, y, puzzle), steps, solution, recursion_count + 1):
             return True, steps + ["down"]
         
         
@@ -331,7 +344,7 @@ def updatePuzzle(xP, yP, x, y, puzzle):  # Cuando una caja se pone encima de un 
     if char == "$":  # Entonces va a mover una caja
 
         puzzle[yP][xP] = " "
-        puzzle[x][y]="@"
+        puzzle[y][x]="@"
 
         
         # Calcula la dirección de movimiento de la caja
@@ -353,7 +366,7 @@ def updatePuzzle(xP, yP, x, y, puzzle):  # Cuando una caja se pone encima de un 
         else:
             puzzle[yP][xP] = " "
         
-        puzzle[x][y]="*"
+        puzzle[y][x]="*"
 
 
     elif char==" ":
@@ -364,7 +377,7 @@ def updatePuzzle(xP, yP, x, y, puzzle):  # Cuando una caja se pone encima de un 
         else:
             puzzle[yP][xP] = " "
 
-        puzzle[x][y]="@"
+        puzzle[y][x]="@"
 
 
 
