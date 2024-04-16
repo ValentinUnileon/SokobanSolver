@@ -19,17 +19,22 @@ class TestSokoban(unittest.TestCase):
         self.assertEqual(main.isMovementValid(7, 4, self.puzzle_lines7), False)   #caso que se mueve abajo a la horizontal y NO tiene un objetivo
         self.assertEqual(main.isMovementValid(2, 4, self.puzzle_lines8), False)
         self.assertEqual(main.isMovementValid(2, 4, self.puzzle_lines9), False)
-        #self.assertEqual(main.isMovementValid(7, 4, self.puzzle_lines10), False)
+        #self.assertEqual(main.isMovementValid(7, 4, self.puzzle_lines10), False) #FALLO
 
     def test_updatePuzzle(self):
 
         xP, yP=main.getCharPositionXY(self.puzzle_lines_Normal_Movement)
         self.assertEqual(main.updatePuzzle(xP, yP, xP+1, yP, self.puzzle_lines_Normal_Movement), self.puzzle_lines_Normal_Movement_result)
+        self.assertEqual(main.updatePuzzle(xP, yP, xP+1, yP, self.puzzle_lines_box_Movement), self.puzzle_lines_box_Movement_result)
 
+        resultado=main.updatePuzzle(xP, yP, xP, yP+1, self.puzzle_lines_box_MovementDown)
+        for i in resultado:
+            print(i)
+
+        self.assertEqual(resultado, self.puzzle_lines_box_MovementDown_result)
 
     #Puzzle for updatePuzzle
         
-    #Check a normal movement
         
     puzzle_lines_Normal_Movement = [
     ['X', 'X', 'X', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '\n'],
@@ -50,6 +55,53 @@ class TestSokoban(unittest.TestCase):
     ['#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '.', ' ', ' ', ' ', ' ', '#', '\n'],
     ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
     ]
+
+    #
+
+    puzzle_lines_box_Movement = [
+    ['X', 'X', 'X', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '\n'],
+    ['X', 'X', 'X', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '!', '#', '#', '#', '#', '\n'],
+    ['#', ' ', ' ', '@', '$', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '.', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
+    ]
+
+    puzzle_lines_box_Movement_result = [
+    ['X', 'X', 'X', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '\n'],
+    ['X', 'X', 'X', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '!', '#', '#', '#', '#', '\n'],
+    ['#', ' ', ' ', ' ', '@', '$', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '.', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
+    ]
+
+    #
+
+    puzzle_lines_box_MovementDown = [
+    ['X', 'X', 'X', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '\n'],
+    ['X', 'X', 'X', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', ' ', ' ', ' ', '@', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '!', '#', '#', '#', '#', '\n'],
+    ['#', ' ', ' ', ' ', '$', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '.', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
+    ]
+
+    puzzle_lines_box_MovementDown_result = [
+    ['X', 'X', 'X', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '\n'],
+    ['X', 'X', 'X', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '!', '#', '#', '#', '#', '\n'],
+    ['#', ' ', ' ', ' ', '@', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', ' ', ' ', ' ', '$', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '.', ' ', ' ', ' ', ' ', '#', '\n'],
+    ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
+    ]
+
+
+
 
     #######
         
